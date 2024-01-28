@@ -9,7 +9,7 @@ The work presented here was carried out in the autumn semester of 2023 for the *
 
 The project aimed to teach the students how to assemble genomes and transcriptomes, but also how to annotate the resulting assemblies. Further, it sought to assess the presence of synteny/ collinearity in five *Arabidopsis thaliana* subpopulations (An-1, C24, Cvi-0, Ler, and Sha). Raw sequencing data obtained from Jiao and Schneeberger (2020)[^1]. More information is available [here](https://www.nature.com/articles/s41467-020-14779-y#data-availability).
 
-The [**methods.md**](https://github.com/JeremyRotzetter/genome-assembly-annotation/methods.md) file broadly explains the steps taken during the project and also provides all tools, their utilized versions and where to obtain them.
+The [**methods.md**](https://github.com/JeremyRotzetter/genome-assembly-annotation/blob/main/methods.md) file broadly explains the steps taken during the project and also provides all tools, their utilized versions and where to obtain them.
 
 ## Repository structure
 The repository is divided into an assembly and an annotation part.
