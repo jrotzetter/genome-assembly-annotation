@@ -1,0 +1,107 @@
+### IGNORE FOR NOW. USE CONTAINER INSTEAD ###
+
+#~~~~~~~~#LF#~~~~~~~~#
+# Cluster specific, ignore as non-functional due to writing permission issues for R?!
+#~~~~~~~~~~~~~~~~~#
+
+#~~~~~~~~#WSL#~~~~~~~~#
+# WSL specific, also unable to install R packages for some reason?!
+#~~~~~~~~~~~~~~~~~#
+
+# 1.1 Install R
+--------------------------------------------------------------
+# GENESPACE is meant to be run interactively in the R environment for statistical computing. So, you need to have R installed. See CRAN for the most recent release.
+
+#~~~~~~~~#WSL#~~~~~~~~#
+# make sure to add the R executable to your $PATH environment variable so that it is callable from the terminal (on Windows just press start, search for edit environment
+# variables (might be named differently based on your system language, in German: Umgebungsvariablen bearbeiten), look for Path under system variables and click edit,
+# new and add the path to the R executable)
+#~~~~~~~~~~~~~~~~~#
+
+# 1.2 Install orthofinder
+--------------------------------------------------------------
+#~~~~~~~~#LF#~~~~~~~~#
+# check for available conda installations on the cluster
+module avail |& less | grep -i conda
+
+module load Conda/miniconda/latest # load conda
+eval "$(conda shell.bash hook)" # Prepare the environment for Python
+#~~~~~~~~~~~~~~~~~#
+
+
+#~~~~~~~~#WSL#~~~~~~~~#
+# install miniconda on WSL for Windows users. These four commands quickly and quietly install the latest 64-bit version of the installer and then clean up after themselves.
+
+mkdir -p ~/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm -rf ~/miniconda3/miniconda.sh
+
+# After installing, initialize your newly-installed Miniconda. The following commands initialize for bash and zsh shells:
+
+~/miniconda3/bin/conda init bash
+~/miniconda3/bin/conda init zsh
+#~~~~~~~~~~~~~~~~~#
+
+conda create -n orthofinder # will create a conda environment with this name in your home directory
+conda activate orthofinder # enter the newly created conda environment
+conda install -c bioconda orthofinder # install the newest orthofinder version from bioconda
+
+# 1.3 Install MCScanX
+--------------------------------------------------------------
+cd WORKDIR/TARGET_DIR
+wget https://github.com/wyp1125/MCScanX/archive/refs/heads/master.zip # remember to get the most recent link for the zip file from github
+mv master.zip MCScanx.zip
+unzip MCScanx.zip
+mv MCScanX-master/ MCScanX
+cd MCScanX/
+make
+
+# 1.4 Install Genespace
+--------------------------------------------------------------
+# Once the above 3rd party dependencies are installed, get into R. If you made a conda environment, its useful to open R directly from that
+# environment so that OrthoFinder stays in the path.
+
+conda activate orthofinder
+
+#~~~~~~~~#LF#~~~~~~~~#
+#LF# module load R/latest
+
+# open -na rstudio # if using rstudio, otherwise, simply `R` => open -na R is specific to macOS and is used to open an application in a new instance. Use only R for Unix systems.
+
+# mkdir <path-to-personal-R-library> # skip if default library install path has writing permission
+#~~~~~~~~~~~~~~~~~#
+
+#~~~~~~~~#WSL#~~~~~~~~#
+Run sudo apt-get update. Check available R packages: apt list r-base -a
+sudo apt-get install r-base # Install R for WSL
+#~~~~~~~~~~~~~~~~~#
+
+# on UNIX terminal
+R # open R
+
+#~~~~~~~~#LF#~~~~~~~~#
+dir.create(Sys.getenv("R_LIBS_USER")) # creates the folder for personal R library, specific to R version, use only if R does not automatically ask if user would like to create personal library
+.libPaths(Sys.getenv("R_LIBS_USER")) # gets/sets the library trees within which packages are looked for, in this case the R_LIBS_USER will be the first place (the personal library)
+#~~~~~~~~~~~~~~~~~#
+
+#~~~~~~~~#WSL#~~~~~~~~#
+# on WSL if the specified path for installing R packages does not have writing permission, it should ask if you want to create a personal library and where + name
+#~~~~~~~~~~~~~~~~~#
+
+# Once in R, the easiest way to install GENESPACE uses the package devtools (which may need to be installed separately):
+
+if (!requireNamespace("devtools", quietly = TRUE))
+    install.packages("devtools")
+devtools::install_github("jtlovell/GENESPACE")
+
+2.5 Install R dependencies
+--------------------------------------------------------------
+# If they are not yet installed, install_github will install a few dependencies directly (ggplot2, igraph, dbscan, R.utils, parallel).
+# However, you will need to install the bioconductor packages separately:
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(c("Biostrings", "rtracklayer"))
+
+library(GENESPACE)

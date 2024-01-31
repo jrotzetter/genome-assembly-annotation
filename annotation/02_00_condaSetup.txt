@@ -1,0 +1,22 @@
+# check for available modules on the cluster
+# module avail |& less | grep -i "<query>"
+
+module load Conda/miniconda/latest # load conda
+eval "$(conda shell.bash hook)" # Prepare the environment for Python 
+
+conda create -n genomeAnnot # will create a conda environment with this name in your home directory
+conda activate genomeAnnot # enter the newly created conda environment
+conda install -c bioconda perl-bioperl # install perl-bioperl package
+
+
+# in case R and R packages are also to be installed when creating conda environment
+conda create -n r_env r-essentials r-base
+
+conda activate r_env
+
+conda list
+
+# or to install later
+conda install r r-essentials --channel conda-forge
+
+conda install r-<package-name> --channel conda-forge
